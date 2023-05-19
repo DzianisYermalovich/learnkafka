@@ -11,5 +11,7 @@ RUN adduser kafka && adduser kafka kafka \
     && chown kafka:kafka .
 USER kafka:kafka
 
+COPY server.properties config/kraft
+
 COPY entrypoint.sh .
 ENTRYPOINT ["bash", "entrypoint.sh"]
