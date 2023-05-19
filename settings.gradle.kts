@@ -1,3 +1,3 @@
 rootProject.name = "learnkafka"
 
-include("consumer")
+include("producer")
