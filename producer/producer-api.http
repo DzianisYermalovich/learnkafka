@@ -1,3 +1,4 @@
+#@name Add client data
 POST http://localhost:8080/clients
 Content-Type: application/json
 
