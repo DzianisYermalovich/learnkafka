@@ -1,4 +1,4 @@
-package com.godel.learnkafka.consumer.transaction;
+package com.godel.learnkafka.producer.transaction;
 
 public enum OrderType {
     INCOME,

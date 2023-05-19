@@ -1,4 +1,4 @@
-package com.godel.learnkafka.consumer.client;
+package com.godel.learnkafka.producer.client;
 
 public record Client(
         Long clientId,

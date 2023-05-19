@@ -1,4 +1,4 @@
-package com.godel.learnkafka.consumer.transaction;
+package com.godel.learnkafka.producer.transaction;
 
 import java.time.LocalDateTime;
 
