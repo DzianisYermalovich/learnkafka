@@ -1,0 +1,5 @@
+services:
+  kafka:
+    build: kafka
+    ports:
+      - "9092:9092"
