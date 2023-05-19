@@ -1,0 +1,9 @@
+POST http://localhost:8080/clients
+Content-Type: application/json
+
+{
+  "clientId": 1,
+  "email": "someemail@godeltech.com"
+}
+
+###
