@@ -2,12 +2,10 @@ package com.godel.learnkafka.producer.transaction;
 
 import com.godel.learnkafka.producer.producer.Producer;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.godel.learnkafka.producer.topic.Topic.TRANSACTION;
+import static org.springframework.http.HttpStatus.ACCEPTED;
 
 @RestController
 @RequestMapping("/transactions")
@@ -17,6 +15,7 @@ public class TransactionController {
     private final Producer producer;
 
     @PostMapping
+    @ResponseStatus(ACCEPTED)
     public void addTransactionData(@RequestBody Transaction transaction) {
         producer.send(TRANSACTION, transaction);
     }

@@ -19,7 +19,7 @@ public class TopicConfiguration {
     private NewTopic[] getTopics() {
         return EnumSet.allOf(Topic.class)
                 .stream()
-                .map(topic -> new NewTopic(topic.getName(), 1, (short) 1))
+                .map(topic -> new NewTopic(topic.getName(), 5, (short) 1))
                 .toArray(NewTopic[]::new);
     }
 }
