@@ -1,31 +1,23 @@
 package com.godel.learnkafka.producer.client;
 
-import org.apache.kafka.clients.consumer.Consumer;
+import com.godel.learnkafka.producer.topic.Topic;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.springframework.kafka.support.serializer.ParseStringDeserializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
-import org.springframework.kafka.test.utils.KafkaTestUtils;
 
-import java.util.Map;
-
-import static com.godel.learnkafka.producer.topic.Topic.TopicNames.CLIENT;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
+import static com.godel.learnkafka.producer.consumer.TestConsumerFactory.createConsumerForTopic;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.kafka.support.serializer.JsonDeserializer.TRUSTED_PACKAGES;
 import static org.springframework.kafka.test.utils.KafkaTestUtils.getRecords;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @EmbeddedKafka(
-        topics = {CLIENT},
+        topics = {Topic.TopicNames.CLIENT},
         bootstrapServersProperty = "spring.kafka.bootstrap-servers")
 class ClientIntegrationTest {
 
@@ -52,34 +44,16 @@ class ClientIntegrationTest {
         assertEquals(CLIENT_ID, actualClientRecord.key());
     }
 
+    @Test
+    @Disabled
+    void duplicate() {
+        shouldAddClientDataIntoKafka();
+    }
+
     private ConsumerRecord<Long, Client> getRecord() {
-        final var consumer = getConsumer();
+        final var consumer = createConsumerForTopic(embeddedKafka, Topic.CLIENT, Client.class);
         final var records = getRecords(consumer);
         return records.iterator().next();
-    }
-
-    private Consumer<Long, Client> getConsumer() {
-        final var consumerFactory = getConsumerFactory();
-        final var consumer = consumerFactory.createConsumer();
-        embeddedKafka.consumeFromAnEmbeddedTopic(consumer, CLIENT);
-        return consumer;
-    }
-
-    private DefaultKafkaConsumerFactory<Long, Client> getConsumerFactory() {
-        final var consumerProps = getConsumerProps();
-        return new DefaultKafkaConsumerFactory<>(
-                consumerProps,
-                new ParseStringDeserializer<>(Long::decode),
-                new JsonDeserializer<>()
-        );
-    }
-
-    @NotNull
-    private Map<String, Object> getConsumerProps() {
-        final var consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafka);
-        consumerProps.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
-        consumerProps.put(TRUSTED_PACKAGES, "com.godel.learnkafka.*");
-        return consumerProps;
     }
 
 }
