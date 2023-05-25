@@ -1,6 +1,7 @@
 package com.godel.learnkafka.producer.client;
 
 import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.support.serializer.ParseStringDeserializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
@@ -21,7 +23,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.kafka.support.serializer.JsonDeserializer.TRUSTED_PACKAGES;
 import static org.springframework.kafka.test.utils.KafkaTestUtils.getRecords;
 
-@SpringBootTest(webEnvironment= RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 @EmbeddedKafka(
         topics = {CLIENT},
         bootstrapServersProperty = "spring.kafka.bootstrap-servers")
@@ -44,26 +46,32 @@ class ClientIntegrationTest {
                 .getStatusCode()
                 .is2xxSuccessful();
 
-        final var actualClient = getActualClient();
+        final var actualClientRecord = getRecord();
+        final var actualClient = actualClientRecord.value();
         assertEquals(givenClient, actualClient);
+        assertEquals(CLIENT_ID, actualClientRecord.key());
     }
 
-    private Client getActualClient() {
+    private ConsumerRecord<Long, Client> getRecord() {
         final var consumer = getConsumer();
         final var records = getRecords(consumer);
-        return records.iterator().next().value();
+        return records.iterator().next();
     }
 
-    private Consumer<Object, Client> getConsumer() {
+    private Consumer<Long, Client> getConsumer() {
         final var consumerFactory = getConsumerFactory();
         final var consumer = consumerFactory.createConsumer();
         embeddedKafka.consumeFromAnEmbeddedTopic(consumer, CLIENT);
         return consumer;
     }
 
-    private DefaultKafkaConsumerFactory<Object, Client> getConsumerFactory() {
+    private DefaultKafkaConsumerFactory<Long, Client> getConsumerFactory() {
         final var consumerProps = getConsumerProps();
-        return  new DefaultKafkaConsumerFactory<>(consumerProps, null, new JsonDeserializer<>());
+        return new DefaultKafkaConsumerFactory<>(
+                consumerProps,
+                new ParseStringDeserializer<>(Long::decode),
+                new JsonDeserializer<>()
+        );
     }
 
     @NotNull
