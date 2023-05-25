@@ -53,6 +53,7 @@ class TransactionIntegrationTest {
         final var actualTransactionRecord = getRecord(consumer);
         final var actualTransaction = actualTransactionRecord.value();
         assertEquals(givenTransaction, actualTransaction);
+        assertEquals(CLIENT_ID, actualTransactionRecord.key());
     }
 
 }

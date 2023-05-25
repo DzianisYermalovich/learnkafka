@@ -17,7 +17,7 @@ public class TransactionController {
     @PostMapping
     @ResponseStatus(ACCEPTED)
     public void addTransactionData(@RequestBody Transaction transaction) {
-        producer.send(TRANSACTION, transaction);
+        producer.send(TRANSACTION, transaction.clientId(), transaction);
     }
 
 }
