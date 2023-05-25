@@ -1,7 +1,5 @@
-package com.godel.learnkafka.producer;
+package com.godel.learnkafka.producer.client;
 
-import com.godel.learnkafka.producer.transaction.OrderType;
-import com.godel.learnkafka.producer.transaction.Transaction;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -14,11 +12,9 @@ import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
-import static com.godel.learnkafka.producer.topic.Topic.TopicNames.TRANSACTION;
-import static com.godel.learnkafka.producer.transaction.OrderType.INCOME;
+import static com.godel.learnkafka.producer.topic.Topic.TopicNames.CLIENT;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -27,16 +23,12 @@ import static org.springframework.kafka.test.utils.KafkaTestUtils.getRecords;
 
 @SpringBootTest(webEnvironment= RANDOM_PORT)
 @EmbeddedKafka(
-        topics = {TRANSACTION},
+        topics = {CLIENT},
         bootstrapServersProperty = "spring.kafka.bootstrap-servers")
-class TransactionIntegrationTest {
+class ClientIntegrationTest {
 
-    final static String BANK = "TechnoBank";
-    final static Long CLIENT_ID = 1L;
-    final static OrderType ORDER_TYPE = INCOME;
-    final static Integer QUANTITY = 3;
-    final static Double PRICE = 9.99;
-    final static LocalDateTime CREATED_AT = LocalDateTime.now();
+    private static final Long CLIENT_ID = 1L;
+    private static final String EMAIL = "some@godeltech.com";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -45,31 +37,31 @@ class TransactionIntegrationTest {
     private EmbeddedKafkaBroker embeddedKafka;
 
     @Test
-    void shouldAddTransactionDataIntoKafka() {
-        final var givenTransaction = new Transaction(BANK, CLIENT_ID, ORDER_TYPE, QUANTITY, PRICE, CREATED_AT);
+    void shouldAddClientDataIntoKafka() {
+        final var givenClient = new Client(CLIENT_ID, EMAIL);
 
-        testRestTemplate.postForEntity("/transactions", givenTransaction, Void.class)
+        testRestTemplate.postForEntity("/clients", givenClient, Void.class)
                 .getStatusCode()
                 .is2xxSuccessful();
 
-        final var actualTransaction = getActualTransaction();
-        assertEquals(givenTransaction, actualTransaction);
+        final var actualClient = getActualClient();
+        assertEquals(givenClient, actualClient);
     }
 
-    private Transaction getActualTransaction() {
+    private Client getActualClient() {
         final var consumer = getConsumer();
         final var records = getRecords(consumer);
         return records.iterator().next().value();
     }
 
-    private Consumer<Object, Transaction> getConsumer() {
+    private Consumer<Object, Client> getConsumer() {
         final var consumerFactory = getConsumerFactory();
         final var consumer = consumerFactory.createConsumer();
-        embeddedKafka.consumeFromAnEmbeddedTopic(consumer, TRANSACTION);
+        embeddedKafka.consumeFromAnEmbeddedTopic(consumer, CLIENT);
         return consumer;
     }
 
-    private DefaultKafkaConsumerFactory<Object, Transaction> getConsumerFactory() {
+    private DefaultKafkaConsumerFactory<Object, Client> getConsumerFactory() {
         final var consumerProps = getConsumerProps();
         return  new DefaultKafkaConsumerFactory<>(consumerProps, null, new JsonDeserializer<>());
     }
