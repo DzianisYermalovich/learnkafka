@@ -18,7 +18,6 @@ repositories {
 	mavenCentral()
 }
 
-extra["testcontainersVersion"] = "1.18.1"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -27,14 +26,6 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.kafka:spring-kafka-test")
-	testImplementation("org.testcontainers:junit-jupiter")
-	testImplementation("org.testcontainers:kafka")
-}
-
-dependencyManagement {
-	imports {
-		mavenBom("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
-	}
 }
 
 tasks.withType<Test> {
