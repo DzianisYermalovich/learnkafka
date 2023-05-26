@@ -22,13 +22,19 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.kafka:spring-kafka")
 	implementation("org.postgresql:postgresql")
+	implementation("org.mapstruct:mapstruct:1.5.5.Final")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.springframework.kafka:spring-kafka-test")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:kafka")
+}
+
+tasks.withType<JavaCompile> {
+	options.compilerArgs.add("-Amapstruct.defaultComponentModel=spring"	);
 }
 
 tasks.withType<Test> {
