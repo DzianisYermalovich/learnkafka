@@ -26,7 +26,7 @@ public class TestConsumerFactory {
     }
 
     private static <T> Consumer<Long, T> createConsumer(final EmbeddedKafkaBroker embeddedKafka, final Class<T> clazz) {
-        final var consumerProps = getConsumerProps(embeddedKafka);
+        final var consumerProps = getConsumerProps(embeddedKafka, clazz.getSimpleName());
         final var consumerFactory = new DefaultKafkaConsumerFactory<>(
                 consumerProps,
                 new ParseStringDeserializer<>(Long::decode),
@@ -34,8 +34,12 @@ public class TestConsumerFactory {
         return consumerFactory.createConsumer();
     }
 
-    private static Map<String, Object> getConsumerProps(final EmbeddedKafkaBroker embeddedKafka) {
-        final var consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafka);
+    private static Map<String, Object> getConsumerProps(
+            final EmbeddedKafkaBroker embeddedKafka,
+            final String groupPostfix
+    ) {
+        final var group = "test-group-" + groupPostfix.toLowerCase();
+        final var consumerProps = KafkaTestUtils.consumerProps(group, "true", embeddedKafka);
         consumerProps.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
         consumerProps.put(TRUSTED_PACKAGES, "com.godel.learnkafka.*");
         return consumerProps;
