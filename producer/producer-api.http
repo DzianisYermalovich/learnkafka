@@ -1,0 +1,23 @@
+#@name Add client data
+POST http://localhost:8080/clients
+Content-Type: application/json
+
+{
+  "clientId": 1,
+  "email": "someemail@godeltech.com"
+}
+
+###
+
+#@name Add transaction data
+POST http://localhost:8080/transactions
+Content-Type: application/json
+
+{
+  "bank": "TechnoBank",
+  "clientId": 1,
+  "orderType": "INCOME",
+  "quantity": 3,
+  "price": 9.99,
+  "createdAt": "2023-05-19T15:47:11Z"
+}
