@@ -41,7 +41,6 @@ public class TestConsumerFactory {
         final var group = "test-group-" + groupPostfix.toLowerCase();
         final var consumerProps = KafkaTestUtils.consumerProps(group, "true", embeddedKafka);
         consumerProps.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
-        consumerProps.put(TRUSTED_PACKAGES, "com.godel.learnkafka.*");
         return consumerProps;
     }
 
