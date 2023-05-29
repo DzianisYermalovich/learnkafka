@@ -8,3 +8,5 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
+  kafka:
+    bootstrap-servers: localhost:9092
