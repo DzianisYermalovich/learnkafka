@@ -41,7 +41,7 @@ public abstract class BaseIntegrationTest {
 
     @AfterEach
     void cleanupDb() {
-        final var tableNames = List.of("client", "transaction");
+        final var tableNames = List.of("transaction", "client");
         tableNames.forEach(this::cleanupTable);
     }
 
