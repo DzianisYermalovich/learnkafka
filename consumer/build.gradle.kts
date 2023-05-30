@@ -33,6 +33,8 @@ dependencies {
 	testImplementation("org.springframework.kafka:spring-kafka-test")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:kafka")
+	testImplementation("org.testcontainers:postgresql")
+	testImplementation("org.awaitility:awaitility")
 }
 
 tasks.withType<JavaCompile> {

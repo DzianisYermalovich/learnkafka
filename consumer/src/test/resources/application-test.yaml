@@ -1,0 +1,7 @@
+spring:
+  kafka:
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.springframework.kafka.support.serializer.ToStringSerializer
+      properties:
+        spring.json.add.type.headers: false
