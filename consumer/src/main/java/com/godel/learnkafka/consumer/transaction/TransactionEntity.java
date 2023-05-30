@@ -27,9 +27,7 @@ public class TransactionEntity {
 
     private OrderType orderType;
 
-    private Integer quantity;
-
-    private Double price;
+    private Double total;
 
     private LocalDateTime createdAt;
 

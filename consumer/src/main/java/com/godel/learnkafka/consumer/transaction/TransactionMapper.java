@@ -8,11 +8,10 @@ import org.mapstruct.Mapping;
 public interface TransactionMapper {
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "bank", source = "bank")
-    @Mapping(target = "orderType", source = "orderType")
-    @Mapping(target = "quantity", source = "quantity")
-    @Mapping(target = "price", source = "price")
-    @Mapping(target = "createdAt", source = "createdAt")
-    TransactionEntity toEntity(final Transaction dto);
+    @Mapping(target = "bank", source = "dto.bank")
+    @Mapping(target = "orderType", source = "dto.orderType")
+    @Mapping(target = "total", source = "total")
+    @Mapping(target = "createdAt", source = "dto.createdAt")
+    TransactionEntity toEntity(final Transaction dto, final Double total);
 
 }

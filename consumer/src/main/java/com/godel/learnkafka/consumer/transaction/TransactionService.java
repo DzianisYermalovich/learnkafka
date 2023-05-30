@@ -18,7 +18,8 @@ public class TransactionService {
 
     @Transactional
     public void add(final Transaction transaction) {
-        final var transactionEntity = mapper.toEntity(transaction);
+        final var total = transaction.quantity() * transaction.price();
+        final var transactionEntity = mapper.toEntity(transaction, total);
         final var clientId = transaction.clientId();
         clientService.get(clientId)
                 .or(() -> of(getTemplateClientEntity(clientId)))
@@ -26,7 +27,7 @@ public class TransactionService {
         repository.save(transactionEntity);
     }
 
-    private static ClientEntity getTemplateClientEntity(Long clientId) {
+    private ClientEntity getTemplateClientEntity(Long clientId) {
         return ClientEntity.builder()
                 .id(clientId)
                 .template(true)
