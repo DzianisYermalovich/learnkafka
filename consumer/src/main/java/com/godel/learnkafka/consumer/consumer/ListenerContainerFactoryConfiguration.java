@@ -1,6 +1,7 @@
 package com.godel.learnkafka.consumer.consumer;
 
 import com.godel.learnkafka.consumer.client.Client;
+import com.godel.learnkafka.consumer.transaction.Transaction;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,16 @@ public class ListenerContainerFactoryConfiguration {
                 getCommonProps(),
                 new StringDeserializer(),
                 new JsonDeserializer<>(Client.class)
+        );
+        return getListenerContainerFactory(consumerFactory);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Transaction> transactionListenerContainerFactory() {
+        final var consumerFactory = new DefaultKafkaConsumerFactory<>(
+                getCommonProps(),
+                new StringDeserializer(),
+                new JsonDeserializer<>(Transaction.class)
         );
         return getListenerContainerFactory(consumerFactory);
     }
