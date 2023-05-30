@@ -2,7 +2,7 @@ package com.godel.learnkafka.consumer.transaction;
 
 import java.time.LocalDateTime;
 
-public record   Transaction(
+public record Transaction(
         String bank,
         Long clientId,
         OrderType orderType,

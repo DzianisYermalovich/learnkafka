@@ -24,6 +24,7 @@ dependencies {
 	implementation("org.postgresql:postgresql")
 	implementation("org.mapstruct:mapstruct:1.5.5.Final")
 	implementation("com.fasterxml.jackson.core:jackson-databind")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")

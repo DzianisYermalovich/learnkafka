@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -21,7 +22,7 @@ public class TransactionEntity {
 
     private String bank;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = ALL)
     private ClientEntity client;
 
     private OrderType orderType;
