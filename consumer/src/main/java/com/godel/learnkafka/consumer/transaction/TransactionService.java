@@ -13,7 +13,7 @@ import static java.util.Optional.of;
 public class TransactionService {
 
     private final TransactionMapper mapper;
-    private final TransactionalRepository repository;
+    private final TransactionRepository repository;
     private final ClientService clientService;
 
     @Transactional

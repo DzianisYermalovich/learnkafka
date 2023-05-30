@@ -26,16 +26,16 @@ public class TransactionIntegrationTest extends BaseIntegrationTest {
     private TestProducer testProducer;
 
     @Autowired
-    private TransactionalRepository transactionalRepository;
+    private TransactionRepository transactionRepository;
 
     @Test
     void shouldAddTransactionWithoutClient() {
         final var givenTransaction = new Transaction(BANK, CLIENT_ID, ORDER_TYPE, QUANTITY, PRICE, CREATED_AT);
 
         testProducer.send(TRANSACTION, CLIENT_ID, givenTransaction);
-        await().until(() -> transactionalRepository.existsByClientId(CLIENT_ID));
+        await().until(() -> transactionRepository.existsByClientId(CLIENT_ID));
 
-        final var actualTransaction = transactionalRepository.findByClientId(CLIENT_ID);
+        final var actualTransaction = transactionRepository.findByClientId(CLIENT_ID);
         assertEquals(BANK, actualTransaction.getBank());
         assertEquals(ORDER_TYPE, actualTransaction.getOrderType());
         assertEquals(QUANTITY * PRICE, actualTransaction.getTotal());
@@ -52,9 +52,9 @@ public class TransactionIntegrationTest extends BaseIntegrationTest {
         final var givenTransaction = new Transaction(BANK, CLIENT_ID, ORDER_TYPE, QUANTITY, PRICE, CREATED_AT);
 
         testProducer.send(TRANSACTION, CLIENT_ID, givenTransaction);
-        await().until(() -> transactionalRepository.existsByClientId(CLIENT_ID));
+        await().until(() -> transactionRepository.existsByClientId(CLIENT_ID));
 
-        final var actualTransaction = transactionalRepository.findByClientId(CLIENT_ID);
+        final var actualTransaction = transactionRepository.findByClientId(CLIENT_ID);
         assertEquals(BANK, actualTransaction.getBank());
         assertEquals(ORDER_TYPE, actualTransaction.getOrderType());
         assertEquals(QUANTITY * PRICE, actualTransaction.getTotal());
