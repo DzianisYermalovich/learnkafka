@@ -1,3 +1,6 @@
+volumes:
+  db-data:
+
 services:
   kafka:
     build: kafka
@@ -13,3 +16,23 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
     depends_on:
       - kafka
+  db:
+    image: postgres:15.3
+    hostname: db
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=learnkafka
+  consumer:
+    image: consumer:0.0.1-SNAPSHOT
+    hostname: consumer
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/learnkafka
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    depends_on:
+      - kafka
+      - db
