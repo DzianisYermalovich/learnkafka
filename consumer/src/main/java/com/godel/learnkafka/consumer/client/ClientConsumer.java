@@ -12,7 +12,10 @@ public class ClientConsumer {
 
     private final ClientService service;
 
-    @KafkaListener(topics = CLIENT, groupId = "client", containerFactory = "clientListenerContainerFactory")
+    @KafkaListener(
+            topics = CLIENT,
+            groupId = "client",
+            properties = "spring.json.value.default.type=com.godel.learnkafka.consumer.client.Client")
     public void listen(final Client client) {
         service.add(client);
     }

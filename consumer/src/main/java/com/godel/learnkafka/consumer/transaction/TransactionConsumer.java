@@ -15,7 +15,7 @@ public class TransactionConsumer {
     @KafkaListener(
             topics = TRANSACTION,
             groupId = "transaction",
-            containerFactory = "transactionListenerContainerFactory")
+            properties = "spring.json.value.default.type=com.godel.learnkafka.consumer.transaction.Transaction")
     public void listen(final Transaction transaction) {
         service.add(transaction);
     }
