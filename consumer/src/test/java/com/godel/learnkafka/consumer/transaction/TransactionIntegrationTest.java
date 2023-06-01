@@ -42,7 +42,7 @@ public class TransactionIntegrationTest extends BaseIntegrationTest {
         assertClientIsTemplateClientForTransaction(actualTransaction.getClient());
     }
 
-    private void assertClientIsTemplateClientForTransaction(ClientEntity client) {
+    private void assertClientIsTemplateClientForTransaction(final ClientEntity client) {
         assertEquals(CLIENT_ID, client.getId());
         assertNull(client.getEmail());
         assertTrue(client.isTemplate());
@@ -62,7 +62,7 @@ public class TransactionIntegrationTest extends BaseIntegrationTest {
         assertClientIsExpected(actualTransaction.getClient());
     }
 
-    private void assertClientIsExpected(ClientEntity client) {
+    private void assertClientIsExpected(final ClientEntity client) {
         assertEquals(CLIENT_ID, client.getId());
         assertEquals("someemail@godeltech.com", client.getEmail());
         assertFalse(client.isTemplate());
@@ -79,7 +79,7 @@ public class TransactionIntegrationTest extends BaseIntegrationTest {
         return transactionRepository.findByClientId(CLIENT_ID);
     }
 
-    private void assertTransactionIsExpected(TransactionEntity transaction) {
+    private void assertTransactionIsExpected(final TransactionEntity transaction) {
         assertEquals(BANK, transaction.getBank());
         assertEquals(ORDER_TYPE, transaction.getOrderType());
         assertEquals(QUANTITY * PRICE, transaction.getTotal());

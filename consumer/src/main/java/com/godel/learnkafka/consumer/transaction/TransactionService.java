@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static java.util.Optional.of;
 
 @Service
@@ -20,18 +22,22 @@ public class TransactionService {
     public void add(final Transaction transaction) {
         final var total = transaction.quantity() * transaction.price();
         final var transactionEntity = mapper.toEntity(transaction, total);
-        final var clientId = transaction.clientId();
-        clientService.get(clientId)
-                .or(() -> of(getTemplateClientEntity(clientId)))
-                .ifPresent(transactionEntity::setClient);
+        addClientToTransaction(transaction.clientId(), transactionEntity);
         repository.save(transactionEntity);
     }
 
-    private ClientEntity getTemplateClientEntity(Long clientId) {
-        return ClientEntity.builder()
+    private void addClientToTransaction(final Long clientId, final TransactionEntity transactionEntity) {
+        clientService.get(clientId)
+                .or(() -> getTemplateClientEntity(clientId))
+                .ifPresent(transactionEntity::setClient);
+    }
+
+    private Optional<ClientEntity> getTemplateClientEntity(final Long clientId) {
+        final var templateClientEntity = ClientEntity.builder()
                 .id(clientId)
                 .template(true)
                 .build();
+        return of(templateClientEntity);
     }
 
 }
