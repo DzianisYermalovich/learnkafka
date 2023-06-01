@@ -44,8 +44,7 @@ class TransactionIntegrationTest extends BaseIntegrationTest {
                 .is2xxSuccessful();
 
         final var actualTransactionRecord = getRecord(consumer);
-        final var actualTransaction = actualTransactionRecord.value();
-        assertEquals(givenTransaction, actualTransaction);
+        assertEquals(givenTransaction, actualTransactionRecord.value());
         assertEquals(CLIENT_ID, actualTransactionRecord.key());
     }
 

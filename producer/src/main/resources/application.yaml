@@ -2,6 +2,6 @@ spring:
   kafka:
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      key-serializer: org.springframework.kafka.support.serializer.ToStringSerializer
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
       properties:
         spring.json.add.type.headers: false

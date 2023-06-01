@@ -37,8 +37,7 @@ class ClientIntegrationTest extends BaseIntegrationTest {
                 .is2xxSuccessful();
 
         final var actualClientRecord = getRecord(consumer);
-        final var actualClient = actualClientRecord.value();
-        assertEquals(givenClient, actualClient);
+        assertEquals(givenClient, actualClientRecord.value());
         assertEquals(CLIENT_ID, actualClientRecord.key());
     }
 
