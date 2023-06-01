@@ -7,7 +7,7 @@ import static org.springframework.kafka.test.utils.KafkaTestUtils.getRecords;
 
 public class TestConsumerUtils {
 
-    public static <T> ConsumerRecord<Long, T> getRecord(Consumer<Long, T> consumer) {
+    public static <T> ConsumerRecord<Long, T> getRecord(final Consumer<Long, T> consumer) {
         final var records = getRecords(consumer);
         return records.iterator().next();
     }

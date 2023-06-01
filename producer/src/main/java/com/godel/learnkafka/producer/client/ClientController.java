@@ -16,7 +16,7 @@ public class ClientController {
 
     @PostMapping
     @ResponseStatus(ACCEPTED)
-    public void addClientData(@RequestBody Client client) {
+    public void addClientData(@RequestBody final Client client) {
         producer.send(CLIENT, client.clientId(), client);
     }
 

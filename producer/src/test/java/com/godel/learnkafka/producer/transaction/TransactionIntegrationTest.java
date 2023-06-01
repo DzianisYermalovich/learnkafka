@@ -39,12 +39,20 @@ class TransactionIntegrationTest extends BaseIntegrationTest {
     void shouldAddTransactionDataIntoKafka() {
         final var givenTransaction = new Transaction(BANK, CLIENT_ID, ORDER_TYPE, QUANTITY, PRICE, CREATED_AT);
 
-        testRestTemplate.postForEntity("/transactions", givenTransaction, Void.class)
+        whenTransactionSent(givenTransaction);
+
+        thenTransactionDataAdded(givenTransaction);
+    }
+
+    private void whenTransactionSent(final Transaction transaction) {
+        testRestTemplate.postForEntity("/transactions", transaction, Void.class)
                 .getStatusCode()
                 .is2xxSuccessful();
+    }
 
+    private static void thenTransactionDataAdded(final Transaction transaction) {
         final var actualTransactionRecord = getRecord(consumer);
-        assertEquals(givenTransaction, actualTransactionRecord.value());
+        assertEquals(transaction, actualTransactionRecord.value());
         assertEquals(CLIENT_ID, actualTransactionRecord.key());
     }
 

@@ -6,11 +6,11 @@ import org.apache.kafka.common.serialization.LongDeserializer;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
-import org.springframework.kafka.test.utils.KafkaTestUtils;
 
 import java.util.Map;
 
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
+import static org.springframework.kafka.test.utils.KafkaTestUtils.consumerProps;
 
 public class TestConsumerFactory {
 
@@ -38,7 +38,7 @@ public class TestConsumerFactory {
             final String groupPostfix
     ) {
         final var group = "test-group-" + groupPostfix.toLowerCase();
-        final var consumerProps = KafkaTestUtils.consumerProps(group, "true", embeddedKafka);
+        final var consumerProps = consumerProps(group, "true", embeddedKafka);
         consumerProps.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
         return consumerProps;
     }

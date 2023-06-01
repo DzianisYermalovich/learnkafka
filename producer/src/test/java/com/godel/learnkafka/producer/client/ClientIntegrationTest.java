@@ -32,12 +32,20 @@ class ClientIntegrationTest extends BaseIntegrationTest {
     void shouldAddClientDataIntoKafka() {
         final var givenClient = new Client(CLIENT_ID, EMAIL);
 
-        testRestTemplate.postForEntity("/clients", givenClient, Void.class)
+        whenClientSent(givenClient);
+
+        thenClientDataAdded(givenClient);
+    }
+
+    private void whenClientSent(final Client client) {
+        testRestTemplate.postForEntity("/clients", client, Void.class)
                 .getStatusCode()
                 .is2xxSuccessful();
+    }
 
+    private static void thenClientDataAdded(final Client client) {
         final var actualClientRecord = getRecord(consumer);
-        assertEquals(givenClient, actualClientRecord.value());
+        assertEquals(client, actualClientRecord.value());
         assertEquals(CLIENT_ID, actualClientRecord.key());
     }
 
