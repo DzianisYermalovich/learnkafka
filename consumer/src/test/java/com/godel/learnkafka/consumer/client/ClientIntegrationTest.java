@@ -28,6 +28,10 @@ class ClientIntegrationTest extends BaseIntegrationTest {
         testProducer.send(CLIENT, CLIENT_ID, givenClient);
         await().until(() -> clientRepository.existsById(CLIENT_ID));
 
+        thenClientWasAdded();
+    }
+
+    private void thenClientWasAdded() {
         final var actualClientEntity = clientRepository.findById(CLIENT_ID)
                 .orElseThrow();
         assertEquals(CLIENT_ID, actualClientEntity.getId());

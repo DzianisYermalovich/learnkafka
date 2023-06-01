@@ -1,6 +1,7 @@
 package com.godel.learnkafka.consumer.transaction;
 
 import com.godel.learnkafka.consumer.base.BaseIntegrationTest;
+import com.godel.learnkafka.consumer.client.ClientEntity;
 import com.godel.learnkafka.consumer.producer.TestProducer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,40 +30,60 @@ public class TransactionIntegrationTest extends BaseIntegrationTest {
     private TransactionRepository transactionRepository;
 
     @Test
-    void shouldAddTransactionWithoutClient() {
-        final var givenTransaction = new Transaction(BANK, CLIENT_ID, ORDER_TYPE, QUANTITY, PRICE, CREATED_AT);
+    void shouldAddTransactionForNonExistedClient() {
+        whenTransactionSent();
 
-        testProducer.send(TRANSACTION, CLIENT_ID, givenTransaction);
-        await().until(() -> transactionRepository.existsByClientId(CLIENT_ID));
+        thenTransactionAndTemplateClientAdded();
+    }
 
-        final var actualTransaction = transactionRepository.findByClientId(CLIENT_ID);
-        assertEquals(BANK, actualTransaction.getBank());
-        assertEquals(ORDER_TYPE, actualTransaction.getOrderType());
-        assertEquals(QUANTITY * PRICE, actualTransaction.getTotal());
-        assertEquals(CREATED_AT, actualTransaction.getCreatedAt());
-        final var actualClient = actualTransaction.getClient();
-        assertEquals(CLIENT_ID, actualClient.getId());
-        assertNull(actualClient.getEmail());
-        assertTrue(actualClient.isTemplate());
+    private void thenTransactionAndTemplateClientAdded() {
+        final var actualTransaction = getActualTransaction();
+        assertTransactionIsExpected(actualTransaction);
+        assertClientIsTemplateClientForTransaction(actualTransaction.getClient());
+    }
+
+    private void assertClientIsTemplateClientForTransaction(ClientEntity client) {
+        assertEquals(CLIENT_ID, client.getId());
+        assertNull(client.getEmail());
+        assertTrue(client.isTemplate());
     }
 
     @Test
     @Sql(statements = "insert into public.client (id, email, template) values (1, 'someemail@godeltech.com', false)")
-    void shouldAddTransactionWithExistingClient() {
+    void shouldAddTransactionForExistingClient() {
+        whenTransactionSent();
+
+        thenTransactionAddedForExistingClient();
+    }
+
+    private void thenTransactionAddedForExistingClient() {
+        final var actualTransaction = getActualTransaction();
+        assertTransactionIsExpected(actualTransaction);
+        assertClientIsExpected(actualTransaction.getClient());
+    }
+
+    private void assertClientIsExpected(ClientEntity client) {
+        assertEquals(CLIENT_ID, client.getId());
+        assertEquals("someemail@godeltech.com", client.getEmail());
+        assertFalse(client.isTemplate());
+    }
+
+    private void whenTransactionSent() {
         final var givenTransaction = new Transaction(BANK, CLIENT_ID, ORDER_TYPE, QUANTITY, PRICE, CREATED_AT);
 
         testProducer.send(TRANSACTION, CLIENT_ID, givenTransaction);
         await().until(() -> transactionRepository.existsByClientId(CLIENT_ID));
+    }
 
-        final var actualTransaction = transactionRepository.findByClientId(CLIENT_ID);
-        assertEquals(BANK, actualTransaction.getBank());
-        assertEquals(ORDER_TYPE, actualTransaction.getOrderType());
-        assertEquals(QUANTITY * PRICE, actualTransaction.getTotal());
-        assertEquals(CREATED_AT, actualTransaction.getCreatedAt());
-        final var actualClient = actualTransaction.getClient();
-        assertEquals(CLIENT_ID, actualClient.getId());
-        assertEquals("someemail@godeltech.com", actualClient.getEmail());
-        assertFalse(actualClient.isTemplate());
+    private TransactionEntity getActualTransaction() {
+        return transactionRepository.findByClientId(CLIENT_ID);
+    }
+
+    private void assertTransactionIsExpected(TransactionEntity transaction) {
+        assertEquals(BANK, transaction.getBank());
+        assertEquals(ORDER_TYPE, transaction.getOrderType());
+        assertEquals(QUANTITY * PRICE, transaction.getTotal());
+        assertEquals(CREATED_AT, transaction.getCreatedAt());
     }
 
 }
